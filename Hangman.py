@@ -58,12 +58,23 @@ def printWelcome(word):
 
 def printGuessed(guessed, word):
     counter = 0
-    while(counter < len(word)):
+    while(counter < len(word)-1):
         if(word[counter] in guessed):
             print(word[counter], end= "")
         else:
             print("_ ", end= "")
         counter += 1
+    if(word[counter] in guessed):
+        print(word[counter])
+    else:
+        print("_")
+
+def checkState(wordLetters,GuessedLetters):
+    if(GuessedLetters == wordLetters):
+            return "win"
+    else:
+            return "none"
+            
 
 def engine():
     lives = 6
@@ -71,24 +82,25 @@ def engine():
     gameWordLetters = sorted(wordToLetters(gameWord))
     inLetters = []
     printWelcome(gameWord)
-    while(lives >= 0):
+    while(lives > 0):
         
         userIn = getConsoleInput()
-        if(letterInWord(userIn, gameWord) and inLetters.count(userIn) == 0):
-            inLetters.append(userIn)
-            print("Good Job!, Guess another one!")
-        elif(inLetters.count(userIn) > 0):
-            print("Already guessed it!")
-        else:
-            lives -= 1
-            print("Unfortunate! You Got " + str(lives) + " Lives Only!")
-        
-        printGuessed(inLetters, gameWord)
-        inLetters = sorted(inLetters)
-        if(inLetters == gameWordLetters):
+        if(checkState(gameWordLetters, inLetters) == "none"):
+            if(letterInWord(userIn, gameWord) and inLetters.count(userIn) == 0):
+                inLetters.append(userIn)
+                print("Good Job, Guess another one!")
+            elif(inLetters.count(userIn) > 0):
+                print("Already guessed it!")
+            else:
+                lives -= 1
+                print("Unfortunate! You Got " + str(lives) + " Lives Only!") 
+        elif(checkState(gameWordLetters, inLetters) == "win"):
             print("YOU WON!")
             break
-        
+        printGuessed(inLetters, gameWord)
+        inLetters = sorted(inLetters)
+    if(lives == 0):
+        print("YOU LOST")
 
 engine()
 
